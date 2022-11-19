@@ -1,0 +1,15 @@
+[package]
+name = "eth_hist_plot"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", default-features = false, features = ["cargo", "help", "std", "usage"] }
+plotters = { version = "0.3", default_features = false, features = ["chrono", "line_series", "point_series", "svg_backend"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ureq = { version = "2.5", default_features = false, features = ["tls"] }
+
+[profile.release]
+lto = true
