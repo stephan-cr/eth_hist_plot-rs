@@ -118,8 +118,13 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         ))?
         .label("ETH price in USD");
 
-    let exact_merge_date =
-        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 9, 15).and_hms(6, 43, 0), Utc);
+    let exact_merge_date = DateTime::<Utc>::from_utc(
+        NaiveDate::from_ymd_opt(2022, 9, 15)
+            .expect("valid date")
+            .and_hms_opt(6, 43, 0)
+            .expect("valid time"),
+        Utc,
+    );
     let point_data = vec![(exact_merge_date, 1450f64)];
 
     chart
@@ -173,8 +178,13 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         ))?
         .label("ETH market cap in USD");
 
-    let exact_merge_date =
-        DateTime::<Utc>::from_utc(NaiveDate::from_ymd(2022, 9, 15).and_hms(6, 43, 0), Utc);
+    let exact_merge_date = DateTime::<Utc>::from_utc(
+        NaiveDate::from_ymd_opt(2022, 9, 15)
+            .expect("valid date")
+            .and_hms_opt(6, 43, 0)
+            .expect("valid time"),
+        Utc,
+    );
     let point_data = vec![(exact_merge_date, 1450f64)];
 
     chart
