@@ -74,10 +74,6 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         serde_json::from_reader(file)?
     };
 
-    for total_volume in data.iter_total_volumes() {
-        println!("{:?}", total_volume);
-    }
-
     let root = SVGBackend::new("graph.svg", (1024, 768)).into_drawing_area();
 
     let sub_roots = root.split_evenly((2, 1));
@@ -112,8 +108,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     chart
         .draw_series(LineSeries::new(
             data.iter_prices()
-                .filter(|x| x.price().is_some())
-                .map(|x| (*x.timestamp(), x.price().unwrap())),
+                .filter_map(|x| x.price().map(|price| (*x.timestamp(), price))),
             RED,
         ))?
         .label("ETH price in USD");
@@ -172,19 +167,11 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     chart
         .draw_series(LineSeries::new(
             data.iter_market_caps()
-                .filter(|x| x.price().is_some())
-                .map(|x| (*x.timestamp(), x.price().unwrap())),
+                .filter_map(|x| x.price().map(|price| (*x.timestamp(), price))),
             RED,
         ))?
         .label("ETH market cap in USD");
 
-    let exact_merge_date = DateTime::<Utc>::from_utc(
-        NaiveDate::from_ymd_opt(2022, 9, 15)
-            .expect("valid date")
-            .and_hms_opt(6, 43, 0)
-            .expect("valid time"),
-        Utc,
-    );
     let point_data = vec![(exact_merge_date, 1450f64)];
 
     chart
