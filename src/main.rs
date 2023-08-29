@@ -113,7 +113,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         ))?
         .label("ETH price in USD");
 
-    let exact_merge_date = DateTime::<Utc>::from_utc(
+    let exact_merge_date = DateTime::<Utc>::from_naive_utc_and_offset(
         NaiveDate::from_ymd_opt(2022, 9, 15)
             .expect("valid date")
             .and_hms_opt(6, 43, 0)
