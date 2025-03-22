@@ -9,7 +9,7 @@ use std::slice::Iter;
 
 use chrono::serde::ts_milliseconds;
 use chrono::{DateTime, NaiveDate, Utc};
-use clap::{arg, crate_name, crate_version, Command};
+use clap::{arg, crate_name, crate_version, value_parser, Command};
 use plotters::backend::SVGBackend;
 use plotters::chart::ChartBuilder;
 use plotters::drawing::IntoDrawingArea;
@@ -58,15 +58,30 @@ impl Datum {
 fn main() -> Result<(), Box<dyn error::Error>> {
     let matches = Command::new(crate_name!())
         .version(crate_version!())
-        .args(&[arg!(--fetch "fetch from API")])
+        .args(&[
+            arg!(--fetch "fetch from API"),
+            arg!(--days <DAYS> "past days")
+                .value_parser(value_parser!(u32))
+                .default_value("365"),
+        ])
         .get_matches();
 
     let data: Data = if matches.contains_id("fetch") {
         let resp = ureq::get("https://api.coingecko.com/api/v3/coins/ethereum/market_chart")
             .header("accept", "application/json")
             .query("vs_currency", "usd")
-            .query("days", "max") // should be 365, nevertheless keep it for now to improve error handling (which is not that great)
+            .query(
+                "days",
+                matches
+                    .get_one::<u32>("days")
+                    .expect("cannot fail because of default value")
+                    .to_string(),
+            )
             .call()?;
+
+        // in case of an error HTTP status code, the body is not
+        // accessible in ureq 3, see
+        // https://github.com/algesten/ureq/issues/997
 
         serde_json::from_reader(resp.into_body().into_reader())?
     } else {
