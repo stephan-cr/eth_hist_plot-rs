@@ -9,7 +9,7 @@ clap = { version = "4", default-features = false, features = ["cargo", "help", "
 plotters = { version = "0.3", default-features = false, features = ["chrono", "line_series", "point_series", "svg_backend", "deprecated_items"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-ureq = { version = "2.5", default-features = false, features = ["tls"] }
+ureq = { version = "3", default-features = false, features = ["rustls"] }
 
 [profile.release]
 lto = true

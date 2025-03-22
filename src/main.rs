@@ -63,12 +63,12 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     let data: Data = if matches.contains_id("fetch") {
         let resp = ureq::get("https://api.coingecko.com/api/v3/coins/ethereum/market_chart")
-            .set("accept", "application/json")
+            .header("accept", "application/json")
             .query("vs_currency", "usd")
-            .query("days", "max")
+            .query("days", "max") // should be 365, nevertheless keep it for now to improve error handling (which is not that great)
             .call()?;
 
-        serde_json::from_reader(resp.into_reader())?
+        serde_json::from_reader(resp.into_body().into_reader())?
     } else {
         let file = File::open("/home/stephan/Downloads/response_1668851750741.json")?;
         serde_json::from_reader(file)?
